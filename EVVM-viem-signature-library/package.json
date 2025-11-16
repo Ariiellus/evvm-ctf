@@ -1,0 +1,71 @@
+{
+  "name": "@evvm/viem-signature-library",
+  "version": "2.1.2",
+  "description": "TypeScript library for EVVM blockchain interactions, signature building, and transaction execution",
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "build:watch": "rollup -c -w",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build",
+    "dev": "rollup -c -w",
+    "example": "ts-node examples/basic-usage.ts"
+  },
+  "keywords": [
+    "evvm",
+    "blockchain",
+    "ethereum",
+    "web3",
+    "signature",
+    "transaction",
+    "wagmi",
+    "viem",
+    "typescript"
+  ],
+  "author": "EVVM Organization",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/EVVM-org/EVVM_ts_library.git"
+  },
+  "bugs": {
+    "url": "https://github.com/EVVM-org/EVVM_ts_library/issues"
+  },
+  "homepage": "https://github.com/EVVM-org/EVVM_ts_library#readme",
+  "peerDependencies": {
+    "viem": "^2.0.0",
+    "wagmi": "^2.0.0"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^25.0.0",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^15.0.0",
+    "@rollup/plugin-typescript": "^11.0.0",
+    "@types/jest": "^29.5.0",
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.0.0",
+    "jest": "^29.5.0",
+    "rollup": "^4.0.0",
+    "rollup-plugin-dts": "^6.0.0",
+    "ts-jest": "^29.1.0",
+    "ts-node": "^10.9.0",
+    "tslib": "^2.6.0",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "viem": "^2.0.0"
+  }
+}

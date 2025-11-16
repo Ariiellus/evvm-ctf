@@ -1,0 +1,600 @@
+{
+  "abi": [
+    {
+      "type": "constructor",
+      "inputs": [
+        {
+          "name": "_evvmAddress",
+          "type": "address",
+          "internalType": "address"
+        },
+        {
+          "name": "_stakingAddress",
+          "type": "address",
+          "internalType": "address"
+        },
+        { "name": "_owner", "type": "address", "internalType": "address" }
+      ],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "acceptFillFixedPercentage",
+      "inputs": [],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "acceptFillPropotionalPercentage",
+      "inputs": [],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "acceptMaxLimitFillFixedFee",
+      "inputs": [],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "acceptOwner",
+      "inputs": [],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "acceptPercentageFee",
+      "inputs": [],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "acceptWithdrawal",
+      "inputs": [],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "addBalance",
+      "inputs": [
+        { "name": "_token", "type": "address", "internalType": "address" },
+        { "name": "_amount", "type": "uint256", "internalType": "uint256" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "cancelOrder",
+      "inputs": [
+        { "name": "user", "type": "address", "internalType": "address" },
+        {
+          "name": "metadata",
+          "type": "tuple",
+          "internalType": "struct P2PSwap.MetadataCancelOrder",
+          "components": [
+            { "name": "nonce", "type": "uint256", "internalType": "uint256" },
+            { "name": "tokenA", "type": "address", "internalType": "address" },
+            { "name": "tokenB", "type": "address", "internalType": "address" },
+            { "name": "orderId", "type": "uint256", "internalType": "uint256" },
+            { "name": "signature", "type": "bytes", "internalType": "bytes" }
+          ]
+        },
+        {
+          "name": "_priorityFee_Evvm",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        { "name": "_nonce_Evvm", "type": "uint256", "internalType": "uint256" },
+        { "name": "_priority_Evvm", "type": "bool", "internalType": "bool" },
+        { "name": "_signature_Evvm", "type": "bytes", "internalType": "bytes" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "checkIfANonceP2PSwapIsUsed",
+      "inputs": [
+        { "name": "user", "type": "address", "internalType": "address" },
+        { "name": "nonce", "type": "uint256", "internalType": "uint256" }
+      ],
+      "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "dispatchOrder_fillFixedFee",
+      "inputs": [
+        { "name": "user", "type": "address", "internalType": "address" },
+        {
+          "name": "metadata",
+          "type": "tuple",
+          "internalType": "struct P2PSwap.MetadataDispatchOrder",
+          "components": [
+            { "name": "nonce", "type": "uint256", "internalType": "uint256" },
+            { "name": "tokenA", "type": "address", "internalType": "address" },
+            { "name": "tokenB", "type": "address", "internalType": "address" },
+            { "name": "orderId", "type": "uint256", "internalType": "uint256" },
+            {
+              "name": "amountOfTokenBToFill",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            { "name": "signature", "type": "bytes", "internalType": "bytes" }
+          ]
+        },
+        {
+          "name": "_priorityFee_Evvm",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        { "name": "_nonce_Evvm", "type": "uint256", "internalType": "uint256" },
+        { "name": "_priority_Evvm", "type": "bool", "internalType": "bool" },
+        { "name": "_signature_Evvm", "type": "bytes", "internalType": "bytes" },
+        {
+          "name": "maxFillFixedFee",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "dispatchOrder_fillPropotionalFee",
+      "inputs": [
+        { "name": "user", "type": "address", "internalType": "address" },
+        {
+          "name": "metadata",
+          "type": "tuple",
+          "internalType": "struct P2PSwap.MetadataDispatchOrder",
+          "components": [
+            { "name": "nonce", "type": "uint256", "internalType": "uint256" },
+            { "name": "tokenA", "type": "address", "internalType": "address" },
+            { "name": "tokenB", "type": "address", "internalType": "address" },
+            { "name": "orderId", "type": "uint256", "internalType": "uint256" },
+            {
+              "name": "amountOfTokenBToFill",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            { "name": "signature", "type": "bytes", "internalType": "bytes" }
+          ]
+        },
+        {
+          "name": "_priorityFee_Evvm",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        { "name": "_nonce_Evvm", "type": "uint256", "internalType": "uint256" },
+        { "name": "_priority_Evvm", "type": "bool", "internalType": "bool" },
+        { "name": "_signature_Evvm", "type": "bytes", "internalType": "bytes" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "findMarket",
+      "inputs": [
+        { "name": "tokenA", "type": "address", "internalType": "address" },
+        { "name": "tokenB", "type": "address", "internalType": "address" }
+      ],
+      "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "getAllMarketOrders",
+      "inputs": [
+        { "name": "market", "type": "uint256", "internalType": "uint256" }
+      ],
+      "outputs": [
+        {
+          "name": "orders",
+          "type": "tuple[]",
+          "internalType": "struct P2PSwap.OrderForGetter[]",
+          "components": [
+            {
+              "name": "marketId",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            { "name": "orderId", "type": "uint256", "internalType": "uint256" },
+            { "name": "seller", "type": "address", "internalType": "address" },
+            { "name": "amountA", "type": "uint256", "internalType": "uint256" },
+            { "name": "amountB", "type": "uint256", "internalType": "uint256" }
+          ]
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "getAllMarketsMetadata",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "",
+          "type": "tuple[]",
+          "internalType": "struct P2PSwap.MarketInformation[]",
+          "components": [
+            { "name": "tokenA", "type": "address", "internalType": "address" },
+            { "name": "tokenB", "type": "address", "internalType": "address" },
+            { "name": "maxSlot", "type": "uint256", "internalType": "uint256" },
+            {
+              "name": "ordersAvailable",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ]
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "getBalanceOfContract",
+      "inputs": [
+        { "name": "token", "type": "address", "internalType": "address" }
+      ],
+      "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "getMarketMetadata",
+      "inputs": [
+        { "name": "market", "type": "uint256", "internalType": "uint256" }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "tuple",
+          "internalType": "struct P2PSwap.MarketInformation",
+          "components": [
+            { "name": "tokenA", "type": "address", "internalType": "address" },
+            { "name": "tokenB", "type": "address", "internalType": "address" },
+            { "name": "maxSlot", "type": "uint256", "internalType": "uint256" },
+            {
+              "name": "ordersAvailable",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ]
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "getMaxLimitFillFixedFee",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "getMaxLimitFillFixedFeeProposal",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "getMyOrdersInSpecificMarket",
+      "inputs": [
+        { "name": "user", "type": "address", "internalType": "address" },
+        { "name": "market", "type": "uint256", "internalType": "uint256" }
+      ],
+      "outputs": [
+        {
+          "name": "orders",
+          "type": "tuple[]",
+          "internalType": "struct P2PSwap.OrderForGetter[]",
+          "components": [
+            {
+              "name": "marketId",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            { "name": "orderId", "type": "uint256", "internalType": "uint256" },
+            { "name": "seller", "type": "address", "internalType": "address" },
+            { "name": "amountA", "type": "uint256", "internalType": "uint256" },
+            { "name": "amountB", "type": "uint256", "internalType": "uint256" }
+          ]
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "getOrder",
+      "inputs": [
+        { "name": "market", "type": "uint256", "internalType": "uint256" },
+        { "name": "orderId", "type": "uint256", "internalType": "uint256" }
+      ],
+      "outputs": [
+        {
+          "name": "order",
+          "type": "tuple",
+          "internalType": "struct P2PSwap.Order",
+          "components": [
+            { "name": "seller", "type": "address", "internalType": "address" },
+            { "name": "amountA", "type": "uint256", "internalType": "uint256" },
+            { "name": "amountB", "type": "uint256", "internalType": "uint256" }
+          ]
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "getOwner",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "address", "internalType": "address" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "getOwnerProposal",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "address", "internalType": "address" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "getOwnerTimeToAccept",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "getPercentageFee",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "getProposalPercentageFee",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "getProposedWithdrawal",
+      "inputs": [],
+      "outputs": [
+        { "name": "", "type": "address", "internalType": "address" },
+        { "name": "", "type": "uint256", "internalType": "uint256" },
+        { "name": "", "type": "address", "internalType": "address" },
+        { "name": "", "type": "uint256", "internalType": "uint256" }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "getRewardPercentage",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "",
+          "type": "tuple",
+          "internalType": "struct P2PSwap.Percentage",
+          "components": [
+            { "name": "seller", "type": "uint256", "internalType": "uint256" },
+            { "name": "service", "type": "uint256", "internalType": "uint256" },
+            {
+              "name": "mateStaker",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ]
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "getRewardPercentageProposal",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "",
+          "type": "tuple",
+          "internalType": "struct P2PSwap.Percentage",
+          "components": [
+            { "name": "seller", "type": "uint256", "internalType": "uint256" },
+            { "name": "service", "type": "uint256", "internalType": "uint256" },
+            {
+              "name": "mateStaker",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ]
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "makeOrder",
+      "inputs": [
+        { "name": "user", "type": "address", "internalType": "address" },
+        {
+          "name": "metadata",
+          "type": "tuple",
+          "internalType": "struct P2PSwap.MetadataMakeOrder",
+          "components": [
+            { "name": "nonce", "type": "uint256", "internalType": "uint256" },
+            { "name": "tokenA", "type": "address", "internalType": "address" },
+            { "name": "tokenB", "type": "address", "internalType": "address" },
+            { "name": "amountA", "type": "uint256", "internalType": "uint256" },
+            { "name": "amountB", "type": "uint256", "internalType": "uint256" }
+          ]
+        },
+        { "name": "signature", "type": "bytes", "internalType": "bytes" },
+        {
+          "name": "_priorityFee_Evvm",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        { "name": "_nonce_Evvm", "type": "uint256", "internalType": "uint256" },
+        { "name": "_priority_Evvm", "type": "bool", "internalType": "bool" },
+        { "name": "_signature_Evvm", "type": "bytes", "internalType": "bytes" }
+      ],
+      "outputs": [
+        { "name": "market", "type": "uint256", "internalType": "uint256" },
+        { "name": "orderId", "type": "uint256", "internalType": "uint256" }
+      ],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "proposeFillFixedPercentage",
+      "inputs": [
+        { "name": "_seller", "type": "uint256", "internalType": "uint256" },
+        { "name": "_service", "type": "uint256", "internalType": "uint256" },
+        { "name": "_mateStaker", "type": "uint256", "internalType": "uint256" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "proposeFillPropotionalPercentage",
+      "inputs": [
+        { "name": "_seller", "type": "uint256", "internalType": "uint256" },
+        { "name": "_service", "type": "uint256", "internalType": "uint256" },
+        { "name": "_mateStaker", "type": "uint256", "internalType": "uint256" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "proposeMaxLimitFillFixedFee",
+      "inputs": [
+        {
+          "name": "_maxLimitFillFixedFee",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "proposeOwner",
+      "inputs": [
+        { "name": "_owner", "type": "address", "internalType": "address" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "proposePercentageFee",
+      "inputs": [
+        {
+          "name": "_percentageFee",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "proposeWithdrawal",
+      "inputs": [
+        {
+          "name": "_tokenToWithdraw",
+          "type": "address",
+          "internalType": "address"
+        },
+        {
+          "name": "_amountToWithdraw",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        { "name": "_to", "type": "address", "internalType": "address" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "rejectProposeFillFixedPercentage",
+      "inputs": [],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "rejectProposeFillPropotionalPercentage",
+      "inputs": [],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "rejectProposeMaxLimitFillFixedFee",
+      "inputs": [],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "rejectProposeOwner",
+      "inputs": [],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "rejectProposePercentageFee",
+      "inputs": [],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "rejectProposeWithdrawal",
+      "inputs": [],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "stake",
+      "inputs": [
+        { "name": "amount", "type": "uint256", "internalType": "uint256" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "unstake",
+      "inputs": [
+        { "name": "amount", "type": "uint256", "internalType": "uint256" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    }
+  ]
+}
