@@ -25,3 +25,4 @@ reportWake.txt
 
 /.vscode/
 *.code-workspace
+.vercel
