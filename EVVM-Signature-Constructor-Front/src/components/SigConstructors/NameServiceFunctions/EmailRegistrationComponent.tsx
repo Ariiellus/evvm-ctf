@@ -22,6 +22,7 @@ import {
   PayInputData,
   NameServiceSignatureBuilder,
 } from "@evvm/viem-signature-library";
+import { useMagic, MagicRPCError, RPCErrorCode } from "@/hooks/useMagic";
 
 type InfoData = {
   PayInputData: PayInputData;
@@ -37,12 +38,13 @@ export const EmailRegistrationComponent = ({
   evvmID,
   nameServiceAddress,
 }: EmailRegistrationComponentProps) => {
+  const { loginWithEmailOTP, getUserEmail, logout, isLoggedIn } = useMagic();
   const [priority, setPriority] = React.useState("low");
   const [dataToGet, setDataToGet] = React.useState<InfoData | null>(null);
   const [rewardAmount, setRewardAmount] = React.useState<bigint | null>(null);
-  const [otcCode, setOtcCode] = React.useState<string>("");
-  const [otcSent, setOtcSent] = React.useState(false);
-  const [otcVerified, setOtcVerified] = React.useState(false);
+  const [emailVerified, setEmailVerified] = React.useState(false);
+  const [verifiedEmail, setVerifiedEmail] = React.useState<string | null>(null);
+  const [isAuthenticating, setIsAuthenticating] = React.useState(false);
   const [timestampUser, setTimestampUser] = React.useState<bigint | null>(null);
   const [signatureUser, setSignatureUser] = React.useState<`0x${string}` | null>(null);
   // According to documentation, these should be hardcoded to zero/empty
@@ -59,72 +61,128 @@ export const EmailRegistrationComponent = ({
     return el.value;
   };
 
-  const sendOTC = async () => {
+  const authenticateWithMagic = async () => {
     const email = getValue("emailInput_emailRegistration");
     if (!email || !email.includes("@")) {
       alert("Please enter a valid email address");
       return;
     }
 
-    // TODO: Implement actual OTC sending via email service
-    // For now, we'll simulate it
-    console.log("Sending OTC to email:", email);
-    const generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
-    setOtcCode(generatedCode);
-    setOtcSent(true);
-    alert(`OTC Code (simulated): ${generatedCode}\n\nIn production, this would be sent to your email.`);
-  };
+    setIsAuthenticating(true);
 
-  const verifyOTC = async () => {
-    const inputCode = getValue("otcInput_emailRegistration");
-    if (inputCode === otcCode) {
-      const walletData = await getAccountWithRetry(config);
-      if (!walletData) return;
+    try {
+      // First, check if user is already logged in with Magic
+      const loggedIn = await isLoggedIn();
+      if (loggedIn) {
+        console.log("🔓 User already logged in with Magic, logging out to start fresh...");
+        await logout();
+      }
 
-      // Generate timestamp for user
-      const userTimestamp = BigInt(Math.floor(Date.now() / 1000));
-      setTimestampUser(userTimestamp);
+      // Show Magic's Email OTP UI - user will receive OTP code in email
+      console.log("📧 Sending Email OTP to:", email);
+      console.log("⏳ Magic will send an email with a 6-digit code...");
+      console.log("👀 Watch for Magic's modal to appear!");
 
-      // Generate signature for user - sign just the email address
-      // The email registry contract expects a signature over the email
-      const walletClient = await getWalletClient(config);
-      if (!walletClient) return;
+      const didToken = await loginWithEmailOTP(email, true);
 
-      const email = getValue("emailInput_emailRegistration");
-      // Sign just the email address - this is a common pattern for email verification
-      const userSig = await walletClient.signMessage({ 
-        message: email 
-      });
-      setSignatureUser(userSig as `0x${string}`);
+      if (didToken) {
+        console.log("✅ Email OTP authentication successful!");
+        console.log("DID Token:", didToken);
 
-      // timestampAuthority and signatureAuthority are hardcoded to zero/empty per documentation
+        // Get the verified email from Magic
+        const userInfo = await getUserEmail();
+        console.log("📧 Verified email from Magic:", userInfo);
 
-      setOtcVerified(true);
-      alert("Email verified successfully!");
-    } else {
-      alert("Invalid OTC code. Please try again.");
+        // Generate timestamp for when email was verified
+        const userTimestamp = BigInt(Math.floor(Date.now() / 1000));
+        setTimestampUser(userTimestamp);
+
+        // We'll generate the wallet signature later in makeSig()
+        // For now just mark email as verified
+        setEmailVerified(true);
+        setVerifiedEmail(email);
+        alert(`✅ Email verified successfully via Magic OTP!\n\nEmail: ${email}\n\nNext: Fill in the nonces and click "Create signature" to complete registration.`);
+      }
+    } catch (err) {
+      console.error("❌ Error during Email OTP authentication:", err);
+
+      if (err instanceof MagicRPCError) {
+        switch (err.code) {
+          case RPCErrorCode.MagicLinkRateLimited:
+            alert("⏰ Too many authentication attempts. Please wait a moment and try again.");
+            break;
+          case RPCErrorCode.UserAlreadyLoggedIn:
+            // This shouldn't happen since we logout first, but handle it anyway
+            const email = getValue("emailInput_emailRegistration");
+            const userTimestamp = BigInt(Math.floor(Date.now() / 1000));
+            setTimestampUser(userTimestamp);
+            setEmailVerified(true);
+            setVerifiedEmail(email);
+            alert("✅ You're already logged in with Magic. Continuing...");
+            break;
+          default:
+            alert(`❌ Authentication error: ${err.message}\n\nPlease try again.`);
+        }
+      } else {
+        alert("❌ Failed to authenticate. Please try again.");
+      }
+    } finally {
+      setIsAuthenticating(false);
     }
   };
 
   const makeSig = async () => {
-    if (!otcVerified) {
-      alert("Please verify your email with OTC first");
+    if (!emailVerified) {
+      alert("Please verify your email with Magic first");
       return;
     }
 
-    if (!timestampUser || !signatureUser) {
-      alert("Please verify your email with OTC first to generate required signatures");
+    if (!timestampUser || !verifiedEmail) {
+      alert("Please verify your email with Magic first to generate required signatures");
       return;
     }
 
     const walletData = await getAccountWithRetry(config);
     if (!walletData) return;
 
+    // Generate the wallet signature for the verified email if not already done
+    if (!signatureUser) {
+      try {
+        console.log("🔏 Generating wallet signature for email verification...");
+        const walletClient = await getWalletClient(config);
+        if (!walletClient) {
+          alert("❌ Failed to get wallet client. Please ensure your wallet is connected.");
+          return;
+        }
+
+        // Create the message to sign: timestamp + email
+        const messageToSign = `${timestampUser.toString()}:${verifiedEmail}`;
+        console.log("📝 Message to sign:", messageToSign);
+
+        // Sign the message with the user's wallet
+        const signature = await walletClient.signMessage({
+          account: walletData.address,
+          message: messageToSign,
+        });
+
+        console.log("✅ Wallet signature generated:", signature);
+        setSignatureUser(signature);
+
+        // Continue with the rest of the signature generation
+        // We need to wait a tiny bit for state to update
+        await new Promise(resolve => setTimeout(resolve, 100));
+      } catch (error) {
+        console.error("Error generating wallet signature:", error);
+        alert("❌ Failed to generate wallet signature. Please try again.");
+        return;
+      }
+    }
+
     const formData = {
       evvmId: evvmID,
       addressNameService: nameServiceAddress,
       nonceNameService: getValue("nonceNameServiceInput_emailRegistration"),
-      email: getValue("emailInput_emailRegistration"),
+      email: verifiedEmail, // Use the Magic-verified email
       priorityFee_EVVM: getValue("priorityFeeInput_emailRegistration"),
       nonceEVVM: getValue("nonceEVVMInput_emailRegistration"),
       priorityFlag: priority === "high",
@@ -267,54 +325,44 @@ export const EmailRegistrationComponent = ({
       <br />
 
       <p>
-        Register your email address onchain, verified with email OTC. This allows users to send to emails in place of addresses or names!
+        Register your email address onchain, verified with Magic Email OTP.
+        This allows users to send to emails in place of addresses or names!
       </p>
       <br />
 
-      <TextInputField
-        label="Email Address"
-        inputId="emailInput_emailRegistration"
-        placeholder="Enter email address"
-      />
-
-      {!otcSent && (
-        <button
-          onClick={sendOTC}
-          style={{
-            padding: "0.5rem",
-            marginTop: "1rem",
-            backgroundColor: "#4CAF50",
-            color: "white",
-          }}
-        >
-          Send OTC Code
-        </button>
-      )}
-
-      {otcSent && !otcVerified && (
+      {!emailVerified && (
         <>
           <TextInputField
-            label="Enter OTC Code"
-            inputId="otcInput_emailRegistration"
-            placeholder="Enter 6-digit code"
+            label="Email Address"
+            inputId="emailInput_emailRegistration"
+            placeholder="Enter email address"
           />
+
           <button
-            onClick={verifyOTC}
+            onClick={authenticateWithMagic}
+            disabled={isAuthenticating}
             style={{
-              padding: "0.5rem",
-              marginTop: "0.5rem",
-              backgroundColor: "#2196F3",
+              padding: "0.75rem 1.5rem",
+              marginTop: "1rem",
+              backgroundColor: isAuthenticating ? "#9E9E9E" : "#4CAF50",
               color: "white",
+              cursor: isAuthenticating ? "not-allowed" : "pointer",
+              fontSize: "16px",
+              fontWeight: "500",
+              borderRadius: "8px",
+              border: "none",
             }}
           >
-            Verify OTC
+            {isAuthenticating ? "Authenticating..." : "Verify Email with Magic OTP"}
           </button>
         </>
       )}
 
-      {otcVerified && (
+      {emailVerified && verifiedEmail && (
         <>
-          <p style={{ color: "green", marginTop: "1rem" }}>✓ Email Verified</p>
+          <p style={{ color: "green", marginTop: "1rem", fontWeight: "600" }}>
+            ✓ Email Verified: {verifiedEmail}
+          </p>
 
           <NumberInputWithGenerator
             label="NameService Nonce"
