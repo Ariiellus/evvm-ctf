@@ -9,6 +9,7 @@ import {
   HelperInfo,
   NumberInputField,
   TextInputField,
+  TitleAndLink,
 } from "@/components/SigConstructors/InputsAndModules";
 
 import { getAccountWithRetry } from "@/utils/getAccountWithRetry";
@@ -20,7 +21,6 @@ import {
 import {
   EvvmABI,
   PayInputData,
-  NameServiceSignatureBuilder,
 } from "@evvm/viem-signature-library";
 import { useMagic, MagicRPCError, RPCErrorCode } from "@/hooks/useMagic";
 
@@ -131,6 +131,8 @@ export const EmailRegistrationComponent = ({
     }
   };
 
+
+
   const makeSig = async () => {
     if (!emailVerified) {
       alert("Please verify your email with Magic first");
@@ -204,28 +206,51 @@ export const EmailRegistrationComponent = ({
 
     try {
       const walletClient = await getWalletClient(config);
-      const signatureBuilder = new (NameServiceSignatureBuilder as any)(
-        walletClient,
-        walletData
-      );
 
       const reward = await readRewardAmount();
       if (reward === null) {
         throw new Error("Failed to fetch reward amount. Please try again.");
       }
 
-      const { paySignature, actionSignature } =
-        await signatureBuilder.signRegistrationEmail(
-          BigInt(formData.evvmId),
-          formData.addressNameService as `0x${string}`,
-          formData.email,
-          0n, // clowNumber - using 0n as default for email registration
-          BigInt(formData.nonceNameService),
-          reward,
-          BigInt(formData.priorityFee_EVVM),
-          BigInt(formData.nonceEVVM),
-          formData.priorityFlag
-        );
+      // Email/phone registration signatures aren't in the library
+      // We need to manually construct the message strings and sign them
+
+      // Build the payment message: evvmId,pay,to,tokenAddress,amount,priorityFee,nonce,priorityFlag,executor
+      const payMessage =
+        `${formData.evvmId},` +
+        `pay,` +
+        `${formData.addressNameService.toLowerCase()},` +
+        `0x0000000000000000000000000000000000000001,` + // Native token
+        `${(reward * BigInt(100)).toString()},` +
+        `${formData.priorityFee_EVVM},` +
+        `${formData.nonceEVVM},` +
+        `${formData.priorityFlag ? "true" : "false"},` +
+        `${formData.addressNameService.toLowerCase()}`;
+
+      console.log("📝 Pay message to sign:", payMessage);
+
+      // Build the email registration action message: evvmId,registrationEmail,email,nonce
+      const actionMessage =
+        `${formData.evvmId},` +
+        `registrationEmail,` +
+        `${formData.email},` +
+        `${formData.nonceNameService}`;
+
+      console.log("📝 Action message to sign:", actionMessage);
+
+      // Sign both messages
+      const paySignature = await walletClient.signMessage({
+        account: walletData.address,
+        message: payMessage,
+      });
+
+      const actionSignature = await walletClient.signMessage({
+        account: walletData.address,
+        message: actionMessage,
+      });
+
+      console.log("✅ Pay signature:", paySignature);
+      console.log("✅ Action signature:", actionSignature);
 
       setDataToGet({
         PayInputData: {
@@ -322,6 +347,12 @@ export const EmailRegistrationComponent = ({
 
   return (
     <div className="flex flex-1 flex-col justify-center items-center">
+      <div className="flex flex-1 flex-col justify-center items-center">
+  <TitleAndLink
+    title="Email Registration Service"
+    link="https://www.evvm.info/docs/SignatureStructures/NameService/emailRegistrationStructure"
+  />
+  </div>
       <br />
 
       <p>

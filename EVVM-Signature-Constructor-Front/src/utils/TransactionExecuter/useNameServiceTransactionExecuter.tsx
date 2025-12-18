@@ -83,6 +83,52 @@ import {
   FlushUsernameInputData,
 } from "@evvm/viem-signature-library";
 
+// ABI entry for registrationEmail (not yet in npm package v2.1.1)
+const RegistrationEmailABI = [
+  {
+    type: "function",
+    name: "registrationEmail",
+    inputs: [
+      { name: "_user", type: "address", internalType: "address" },
+      { name: "_nonce", type: "uint256", internalType: "uint256" },
+      { name: "_email", type: "string", internalType: "string" },
+      { name: "_timestampUser", type: "uint256", internalType: "uint256" },
+      { name: "_signatureUser", type: "bytes", internalType: "bytes" },
+      { name: "_timestampAuthority", type: "uint256", internalType: "uint256" },
+      { name: "_signatureAuthority", type: "bytes", internalType: "bytes" },
+      { name: "_priorityFeeForFisher", type: "uint256", internalType: "uint256" },
+      { name: "_nonce_Evvm", type: "uint256", internalType: "uint256" },
+      { name: "_priority_Evvm", type: "bool", internalType: "bool" },
+      { name: "_signature_Evvm", type: "bytes", internalType: "bytes" },
+    ],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+] as const;
+
+// ABI entry for registrationPhoneNumber (not yet in npm package v2.1.1)
+const RegistrationPhoneNumberABI = [
+  {
+    type: "function",
+    name: "registrationPhoneNumber",
+    inputs: [
+      { name: "_user", type: "address", internalType: "address" },
+      { name: "_nonce", type: "uint256", internalType: "uint256" },
+      { name: "_phoneNumber", type: "string", internalType: "string" },
+      { name: "_timestampUser", type: "uint256", internalType: "uint256" },
+      { name: "_signatureUser", type: "bytes", internalType: "bytes" },
+      { name: "_timestampAuthority", type: "uint256", internalType: "uint256" },
+      { name: "_signatureAuthority", type: "bytes", internalType: "bytes" },
+      { name: "_priorityFeeForFisher", type: "uint256", internalType: "uint256" },
+      { name: "_nonce_Evvm", type: "uint256", internalType: "uint256" },
+      { name: "_priority_Evvm", type: "bool", internalType: "bool" },
+      { name: "_signature_Evvm", type: "bytes", internalType: "bytes" },
+    ],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+] as const;
+
 // TODO: These types should be added to @evvm/viem-signature-library
 export type EmailRegistrationInputData = {
   user: `0x${string}`;
@@ -183,8 +229,8 @@ const executeEmailRegistration = async (
     return Promise.reject("No input to execute");
   }
 
-  writeContract(config, {
-    abi: NameServiceABI,
+  return writeContract(config, {
+    abi: RegistrationEmailABI,
     address: nameServiceAddress,
     functionName: "registrationEmail",
     args: [
@@ -200,13 +246,7 @@ const executeEmailRegistration = async (
       InputData.priorityFlag_EVVM,
       InputData.signature_EVVM,
     ],
-  })
-    .then(() => {
-      return Promise.resolve();
-    })
-    .catch((error) => {
-      return Promise.reject(error);
-    });
+  });
 };
 
 const executePhoneRegistration = async (
@@ -217,8 +257,8 @@ const executePhoneRegistration = async (
     return Promise.reject("No input to execute");
   }
 
-  writeContract(config, {
-    abi: NameServiceABI,
+  return writeContract(config, {
+    abi: RegistrationPhoneNumberABI,
     address: nameServiceAddress,
     functionName: "registrationPhoneNumber",
     args: [
@@ -234,13 +274,7 @@ const executePhoneRegistration = async (
       InputData.priorityFlag_EVVM,
       InputData.signature_EVVM,
     ],
-  })
-    .then(() => {
-      return Promise.resolve();
-    })
-    .catch((error) => {
-      return Promise.reject(error);
-    });
+  });
 };
 
 const executeMakeOffer = async (

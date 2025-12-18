@@ -1,5 +1,5 @@
 'use client'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { switchChain, getAccount, getChainId, readContract } from '@wagmi/core'
 import { config, networks } from '@/config/index'
 import { EvvmABI } from '@evvm/viem-signature-library'
@@ -52,7 +52,7 @@ const selectStyle = {
 export const SigMenu = () => {
   const [menu, setMenu] = useState('faucet')
   const [evvmID, setEvvmID] = useState('')
-  const [evvmAddress, setEvvmAddress] = useState('')
+  const [evvmAddress, setEvvmAddress] = useState('0x98c5911f5ef7B88368548c917894df3950A16A13')
   const [nameserviceAddress, setNameserviceAddress] = useState('')
   const [stakingAddress, setStakingAddress] = useState('')
   const [p2pswapAddress, setP2pswapAddress] = useState('')
@@ -61,10 +61,8 @@ export const SigMenu = () => {
   const networkOptions = [
     { value: 'sepolia', label: 'Sepolia' },
     { value: 'arbitrumSepolia', label: 'Arbitrum Sepolia' },
-    { value: 'hederaTestnet', label: 'Hedera Testnet' },
-    { value: 'zircuitGarfieldTestnet', label: 'Zircuit Garfield Testnet' },
   ]
-  const [network, setNetwork] = useState('sepolia')
+  const [network, setNetwork] = useState('arbitrumSepolia')
 
   const handleNetworkChange = async (
     e: React.ChangeEvent<HTMLSelectElement>
@@ -83,16 +81,6 @@ export const SigMenu = () => {
     } else if (value === 'arbitrumSepolia') {
       const id = networks.find((n) =>
         n.name?.toLowerCase().includes('arbitrum')
-      )?.id
-      chainId = typeof id === 'string' ? parseInt(id) : id
-    } else if (value === 'zircuitGarfieldTestnet') {
-      const id = networks.find((n) =>
-        n.name === 'zircuitGarfieldTestnet' || n.name?.toLowerCase().includes('zircuit')
-      )?.id
-      chainId = typeof id === 'string' ? parseInt(id) : id
-    } else if (value === 'hederaTestnet') {
-      const id = networks.find((n) =>
-        n.name?.toLowerCase().includes('hedera')
       )?.id
       chainId = typeof id === 'string' ? parseInt(id) : id
     }
@@ -140,16 +128,6 @@ export const SigMenu = () => {
     } else if (network === 'arbitrumSepolia') {
       const id = networks.find((n) =>
         n.name?.toLowerCase().includes('arbitrum')
-      )?.id
-      targetChainId = typeof id === 'string' ? parseInt(id) : id
-    } else if (network === 'zircuitGarfieldTestnet') {
-      const id = networks.find((n) =>
-        n.name?.toLowerCase().includes('zircuit')
-      )?.id
-      targetChainId = typeof id === 'string' ? parseInt(id) : id
-    } else if (network === 'hederaTestnet') {
-      const id = networks.find((n) =>
-        n.name?.toLowerCase().includes('hedera')
       )?.id
       targetChainId = typeof id === 'string' ? parseInt(id) : id
     }
@@ -229,6 +207,18 @@ export const SigMenu = () => {
       setLoadingIDs(false)
     }
   }
+
+  // Auto-load EVVM data when component mounts or evvmAddress changes
+  useEffect(() => {
+    // Only auto-load if evvmAddress is set and we haven't loaded data yet
+    if (evvmAddress && !evvmID && !loadingIDs) {
+      const account = getAccount(config)
+      // Only auto-load if wallet is connected
+      if (account.address) {
+        fetchEvvmSummary()
+      }
+    }
+  }, [evvmAddress]) // Run when evvmAddress changes
 
   // Pass evvmID, evvmAddress, and stakingAddress as props to all components
   const FaucetFunctions = useMemo(

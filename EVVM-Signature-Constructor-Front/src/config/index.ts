@@ -1,19 +1,7 @@
 import { cookieStorage, createStorage } from 'wagmi'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import {
-  sepolia,
   arbitrumSepolia,
-  hederaTestnet,
-  baseSepolia,
-  mantleSepoliaTestnet,
-  monadTestnet,
-  zksyncSepoliaTestnet,
-  celoSepolia,
-  opBNBTestnet,
-  scrollSepolia,
-  zircuitGarfieldTestnet,
-  optimismSepolia,
-  avalancheFuji,
 } from '@reown/appkit/networks'
 import type { AppKitNetwork } from '@reown/appkit/networks'
 
@@ -26,19 +14,7 @@ if (!projectId) {
 }
 
 export const networks = [
-  sepolia,
   arbitrumSepolia,
-  hederaTestnet,
-  baseSepolia,
-  mantleSepoliaTestnet,
-  monadTestnet,
-  zksyncSepoliaTestnet,
-  celoSepolia,
-  opBNBTestnet,
-  scrollSepolia,
-  zircuitGarfieldTestnet,
-  optimismSepolia,
-  avalancheFuji,
 ] as [AppKitNetwork, ...AppKitNetwork[]]
 
 //Set up the Wagmi Adapter (Config)
